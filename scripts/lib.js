@@ -53,7 +53,7 @@ const processSnapshots = (id, zoom, lat, lon, width, height, obfsRecord) => {
   const snapshots = Object.entries(obfsRecord).map(([obfFolder, obfs]) => {
     return processSnapshot(id, zoom, lat, lon, width, height, obfFolder, obfs);
   })
-  console.log(`convert -delay 100 -resize 50% -loop 0 ${snapshots.join(' ')} ./dist/snapshots/snapshot-${id}.gif`);
+  console.log(`convert -delay 100 -loop 0 ${snapshots.join(' ')} ./dist/snapshots/snapshot-${id}.gif`);
 }
 
 const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => {
