@@ -53,14 +53,13 @@ const processSnapshots = (id, zoom, lat, lon, width, height, obfsRecord) => {
   const snapshots = Object.entries(obfsRecord).map(([obfFolder, obfs]) => {
     return processSnapshot(id, zoom, lat, lon, width, height, obfFolder, obfs);
   })
-  console.log(`convert -delay 100 -loop 0 ${snapshots.join(' ')} ./dist/snapshots/snapshot-${id}.gif`);
+  console.log(`convert -delay 100 -loop 0 ${snapshots.join(' ')} ./dist/snapshots/snapshot-${id}-${Object.keys(obfsRecord).join('-')}.gif`);
 }
 
 const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => {
   const snapshotName = `snapshot-${id}-${obfFolder}`;
   const snapshotGpx  = `./dist/tmp/${snapshotName}.gpx`;
-  const snapshotPng = `./dist/snapshots/${snapshotName}.png`;
-
+  const snapshotPng = `./dist/tmp/${snapshotName}.png`;
 
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
