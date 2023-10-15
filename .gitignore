@@ -1,0 +1,5 @@
+.DS_Store
+
+/dist/tiles/12
+/dist/tmp
+/data/**/*
