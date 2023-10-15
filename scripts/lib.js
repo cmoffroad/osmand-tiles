@@ -82,7 +82,7 @@ const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => 
   -native=/Users/julien/Documents/WORKSPACE/OSM/OsmAnd-core-legacy/binaries/darwin/intel/Release \
   -obfFiles=./data/${obfFolder}/ \
   -gpxFile=${snapshotGpx} \
-  -output=./dist/snapshots`);
+  -output=./dist/tmp`);
 
   const text = obfFolder === 'latest' ? new Date().getFullYear() : obfFolder;
   console.log(`convert -pointsize 30 -fill red -draw 'text 10,40 "${text}"' ${snapshotPng} ${snapshotPng}`);

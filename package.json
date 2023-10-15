@@ -5,10 +5,11 @@
   "scripts": {
     "debug": "bash scripts/debug.sh",
     "commit": "bash scripts/commit.sh",
-    "download": "node scripts/download.js | bash",
-    "snapshots": "node scripts/snapshots.js | bash",
-    "tiles": "node scripts/tiles.js | bash",
-    "start": "npm run download && npm run tiles && npm run commit"
+    "download:bash": "node scripts/download.js | bash",
+    "snapshots:bash": "node scripts/snapshots.js | bash",
+    "snapshots": "npm run download:bash && npm run snapshots:bash && npm run commit",
+    "tiles:bash": "node scripts/tiles.js | bash",
+    "tiles": "npm run download:bash && npm run tiles:bash && npm run commit"
   },
   "author": "cmoffroad",
   "license": "MIT",
