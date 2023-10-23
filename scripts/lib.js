@@ -166,6 +166,7 @@ const processOBFs = (dir, country, center, xTiles, yTiles, zooms) => {
 }
 
 module.exports = {
+  deg2num, tile2lat, tile2lon,
   getOBFs,
   generateGPX,
   processOBFs,

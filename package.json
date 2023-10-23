@@ -9,7 +9,8 @@
     "snapshots:bash": "node scripts/snapshots.js | bash",
     "snapshots": "npm run download:bash && npm run snapshots:bash && npm run commit",
     "tiles:bash": "node scripts/tiles.js | bash",
-    "tiles": "npm run download:bash && npm run tiles:bash && npm run commit"
+    "tiles": "npm run download:bash && npm run tiles:bash && npm run commit",
+    "50k": "node scripts/50k.js | bash"
   },
   "author": "cmoffroad",
   "license": "MIT",
