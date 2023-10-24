@@ -32,6 +32,10 @@ for (var x=xTileMin; x<xTiles+xTileMin; x++) {
   		continue;
   	}
 
+  	// if (processed >= 5) {
+  	// 	process.exit(0)
+  	// }
+
   	console.log(`mkdir -p ${xDir}`);
 
   	const [ ymin, xmin ] = coord4326To3857(tile2lat(x, zoom), tile2lon(y, zoom));
