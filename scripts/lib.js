@@ -2,6 +2,22 @@ const fs = require('fs');
 const path = require('path')
 const sqlite3 = require('sqlite3')
 
+function coord4326To3857(lat, lon) {    
+    const X = 20037508.34;
+
+    let long3857 = (lon * X) / 180;
+
+    let lat3857 = parseFloat(lat) + 90;
+    lat3857 = lat3857 * (Math.PI/360);
+    lat3857 = Math.tan(lat3857);
+    lat3857 = Math.log(lat3857);
+    lat3857 = lat3857 / (Math.PI / 180);
+  
+    lat3857 = (lat3857 * X) / 180;
+
+    return [ lat3857, long3857 ];
+}
+
 function tile2lon(x,z) { return (x/Math.pow(2,z)*360-180); }
 
 function tile2lat(y,z) {
@@ -166,7 +182,7 @@ const processOBFs = (dir, country, center, xTiles, yTiles, zooms) => {
 }
 
 module.exports = {
-  deg2num, tile2lat, tile2lon,
+  deg2num, tile2lat, tile2lon, coord4326To3857,
   getOBFs,
   generateGPX,
   processOBFs,

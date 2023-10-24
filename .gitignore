@@ -1,5 +1,6 @@
 .DS_Store
 
 /dist/tiles/12
+/dist/tiles/50K
 /dist/tmp
 /data/**/*

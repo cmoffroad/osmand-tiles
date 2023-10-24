@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const { deg2num, tile2lat, tile2lon } = require('./lib');
+const { deg2num, tile2lat, tile2lon, coord4326To3857 } = require('./lib');
 
 const center = [ 19.070825827131095,99.03986245393754 ];
 const xTiles = 30, yTiles = 25;
@@ -18,6 +18,8 @@ const yTileMin = parseInt(yTileCenter - (yTiles / 2));
 
 const dirTiles = `./dist/tiles`;
 
+let processed = 0;
+
 for (var x=xTileMin; x<xTiles+xTileMin; x++) {
   for (var y=yTileMin; y<yTileMin+yTiles; y++) {
   	const xDir = `${dirTiles}/50K/${zoom}/${x}`;
@@ -25,6 +27,7 @@ for (var x=xTileMin; x<xTiles+xTileMin; x++) {
 
   	try {
   		fs.statSync(filename);
+  		++processed;
   	} catch( e) {
   		continue;
   	}
@@ -49,25 +52,6 @@ for (var x=xTileMin; x<xTiles+xTileMin; x++) {
   	const curl = `curl '${url}' -H 'Referer: http://cld.drr.go.th/' --output ${filename}`
   	console.log(curl);
   	console.log(`sleep 0.2`);
+  	console.log(`echo '[${processed}] ${filename}'`);
   }
 }
-
-
-function coord4326To3857(lat, lon) {
-    
-    const X = 20037508.34;
-
-    let long3857 = (lon * X) / 180;
-
-    let lat3857 = parseFloat(lat) + 90;
-    lat3857 = lat3857 * (Math.PI/360);
-    lat3857 = Math.tan(lat3857);
-    lat3857 = Math.log(lat3857);
-    lat3857 = lat3857 / (Math.PI / 180);
-  
-    lat3857 = (lat3857 * X) / 180;
-
-    return [ lat3857, long3857 ];
-}
-
-
