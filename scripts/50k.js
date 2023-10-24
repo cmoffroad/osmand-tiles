@@ -3,8 +3,8 @@ const fs = require('fs');
 const { deg2num, tile2lat, tile2lon, coord4326To3857 } = require('./lib');
 
 const center = [ 19.070825827131095,99.03986245393754 ];
-const xTiles = 30, yTiles = 25;
-const zoom = 14;
+const zoom = 14, xTiles = 90, yTiles = 110;
+// const zoom = 13, xTiles = 45, yTiles = 55;
 const sleep = 0.2;
 
 const [newX, newY] = deg2num(center[0], center[1], zoom);
@@ -25,11 +25,12 @@ for (var x=xTileMin; x<xTiles+xTileMin; x++) {
   	const xDir = `${dirTiles}/50K/${zoom}/${x}`;
   	const filename = `${xDir}/${y}.png`;
 
+
   	try {
   		fs.statSync(filename);
-  		++processed;
-  	} catch( e) {
   		continue;
+  	} catch( e) {
+		console.log(`echo '[${processed}] ${filename}'`);
   	}
 
   	// if (processed >= 5) {
@@ -56,6 +57,9 @@ for (var x=xTileMin; x<xTiles+xTileMin; x++) {
   	const curl = `curl '${url}' -H 'Referer: http://cld.drr.go.th/' --output ${filename}`
   	console.log(curl);
   	console.log(`sleep 0.2`);
-  	console.log(`echo '[${processed}] ${filename}'`);
+
+  	processed++;  	
   }
 }
+
+process.exit(1);
