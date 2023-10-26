@@ -50,7 +50,7 @@ const generateGPX = (zoom, lat, lon, xTiles, yTiles, obfs) => {
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
   width='${xTiles*tileSize}' height='${yTiles*tileSize}' zoom='${zoom}' mapDensity='1'
-  renderingProperties='showMtbRoutes=true,activityMode=mtb,lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=true,groundSurveyMode=true'
+  renderingProperties='showMtbRoutes=true,activityMode=mtb,lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=false,groundSurveyMode=true'
   renderingName='../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer'
 >
   <wpt lat='${lat}' lon='${lon}'>
