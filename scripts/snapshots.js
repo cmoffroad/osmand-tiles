@@ -24,3 +24,4 @@ processSnapshots(obfs, 'mae-chaem', 'file:///Users/julien/Workspaces/OSM/osm-too
 processSnapshots(obfs, 'mae-ya', 'file:///Users/julien/Workspaces/OSM/osm-tools/maps/gps.html#map=13/19.18345604410202/98.56344781816006&background=worldtopomap&overlays=cmoffroad:explorer');
 processSnapshots(obfs, 'muang-khong', 'file:///Users/julien/Workspaces/OSM/osm-tools/maps/gps.html#map=13/19.374554004279393/98.6808414012194&background=worldtopomap&overlays=cmoffroad:explorer');
 processSnapshots(obfs, 'wiang-haeng', 'file:///Users/julien/Workspaces/OSM/osm-tools/maps/gps.html#map=13/19.655991859268052/98.63981567323208&background=worldtopomap&overlays=cmoffroad:explorer');
+processSnapshots(obfs, 'pa-sak-ngam', 'file:///Users/julien/Workspaces/OSM/osm-tools/maps/gps.html#map=13/19.05479499819361/99.14997048676014&background=worldtopomap&overlays=cmoffroad:explorer');

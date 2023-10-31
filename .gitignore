@@ -4,3 +4,5 @@
 /dist/tiles/50K
 /dist/tmp
 /data/**/*
+
+/node_modules
