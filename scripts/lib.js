@@ -65,7 +65,11 @@ const generateGPX = (zoom, lat, lon, xTiles, yTiles, obfs) => {
   console.log(`echo "${xml.replace(/\n/g, '')}" > ./dist/tmp/${zoom}.gpx`)
 }
 
-const processSnapshots = (id, zoom, lat, lon, width, height, obfsRecord) => {
+const processSnapshots = (obfsRecord, id, url) => {
+  const width = 1920, height = 1080;
+
+  const [zoom, lat, lon] = new URLSearchParams(new URL(url).hash).get('#map').split('/');
+
   const snapshots = Object.entries(obfsRecord).map(([obfFolder, obfs]) => {
     return processSnapshot(id, zoom, lat, lon, width, height, obfFolder, obfs);
   })
