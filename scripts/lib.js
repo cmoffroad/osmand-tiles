@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path')
 const sqlite3 = require('sqlite3')
 
-function coord4326To3857(lat, lon) {    
+function coord4326To3857(lat, lon) {
     const X = 20037508.34;
 
     let long3857 = (lon * X) / 180;
@@ -12,7 +12,7 @@ function coord4326To3857(lat, lon) {
     lat3857 = Math.tan(lat3857);
     lat3857 = Math.log(lat3857);
     lat3857 = lat3857 / (Math.PI / 180);
-  
+
     lat3857 = (lat3857 * X) / 180;
 
     return [ lat3857, long3857 ];
@@ -118,6 +118,8 @@ const processZoom = (zoom, lat, lon, xTiles, yTiles, dirTiles, obfs) => {
 
   generateGPX(zoom, lat, lon, xTiles, yTiles, obfs);
 
+  console.log(`rm -rf ${dirTiles}/${zoom}/`);
+
   for (var x=0; x<xTiles; x++) {
     console.log(`mkdir -p ${dirTiles}/${zoom}/${xTileMin + x}`);
   }
@@ -159,15 +161,10 @@ const processOBFs = (dir, country, center, xTiles, yTiles, zooms) => {
   // compute list OBFs
   const obfs = getOBFs(dir, files);
 
-  // reset folders
-  //console.log(`rm -rf ./dist/tmp/*`);
-  //console.log(`rm -rf ${dirTiles}`);
-
   // compute precise lat/lon
   const [x, y] = deg2num(center[0], center[1], zooms[0]);
   const lat = tile2lat(y, zooms[0]);
   const lon = tile2lon(x, zooms[0]);
-
 
   // process each zoom
   for (var i=0;i<zooms.length; i++) {
@@ -175,14 +172,14 @@ const processOBFs = (dir, country, center, xTiles, yTiles, zooms) => {
   }
 
   // process hilldshades if exists
-  const hillshadeFile = files.find(filename => filename.match('Hillshade'));
-  if (hillshadeFile)
-    processSqlite(path.join(dir, hillshadeFile), [ 12 ], `./dist/tiles/hillshade`);
+  // const hillshadeFile = files.find(filename => filename.match('Hillshade'));
+  // if (hillshadeFile)
+  //   processSqlite(path.join(dir, hillshadeFile), [ 12 ], `./dist/tiles/hillshade`);
 
-  // process slopes if exists
-  const slopeFile = files.find(filename => filename.match('Slope'));
-  if (slopeFile)
-    processSqlite(path.join(dir, slopeFile), [ 11 ], `./dist/tiles/slope`);
+  // // process slopes if exists
+  // const slopeFile = files.find(filename => filename.match('Slope'));
+  // if (slopeFile)
+  //   processSqlite(path.join(dir, slopeFile), [ 11 ], `./dist/tiles/slope`);
 }
 
 module.exports = {
