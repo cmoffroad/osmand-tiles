@@ -168,7 +168,8 @@ const processOBFs = (dir, country, center, xTiles, yTiles, zooms) => {
 
   // process each zoom
   for (var i=0;i<zooms.length; i++) {
-    processZoom(zooms[i], lat, lon, xTiles * Math.pow(2, i), yTiles * Math.pow(2, i), `./dist/tiles`, obfs);
+    if (i > 0)
+      processZoom(zooms[i], lat, lon, xTiles * Math.pow(2, i), yTiles * Math.pow(2, i), `./dist/tiles`, obfs);
   }
 
   // process hilldshades if exists
