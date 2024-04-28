@@ -50,7 +50,7 @@ const generateGPX = (zoom, lat, lon, xTiles, yTiles, obfs) => {
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
   width='${xTiles*tileSize}' height='${yTiles*tileSize}' zoom='${zoom}' mapDensity='1'
-  renderingProperties='showMtbRoutes=true,activityMode=mtb,lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=false,groundSurveyMode=true'
+  renderingProperties='activityMode=mtb,lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=true,groundSurveyMode=true'
   renderingName='../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer'
 >
   <wpt lat='${lat}' lon='${lon}'>
@@ -84,7 +84,7 @@ const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => 
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
   width='${width}' height='${height}' zoom='${zoom}' mapDensity='1'
-  renderingProperties='showMtbRoutes=true,activityMode=mtb,lang=en,contourLines=11,contourWidth=thin,contourDensity=medium,region_hillshade=yes,groundSurveyMode=true'
+  renderingProperties='activityMode=mtb,lang=en,contourLines=11,contourWidth=thin,contourDensity=medium,region_hillshade=yes,groundSurveyMode=true'
   renderingName='../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer'
 >
   <wpt lat='${lat}' lon='${lon}'>
@@ -99,7 +99,7 @@ const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => 
   console.log(`echo "${xml.replace(/\n/g, '')}" > ${snapshotGpx}`)
 
   console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
-  -native=/Users/julien/Documents/WORKSPACE/OSM/OsmAnd-core-legacy/binaries/darwin/intel/Release \
+  -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
   -obfFiles=./data/${obfFolder}/ \
   -gpxFile=${snapshotGpx} \
   -output=./dist/tmp`);
@@ -125,7 +125,7 @@ const processZoom = (zoom, lat, lon, xTiles, yTiles, dirTiles, obfs) => {
   }
 
   console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
-  -native=/Users/julien/Documents/WORKSPACE/OSM/OsmAnd-core-legacy/binaries/darwin/intel/Release \
+  -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
   -obfFiles=./data/latest/ \
   -gpxFile=./dist/tmp/${zoom}.gpx \
   -output=./dist/tmp`);
