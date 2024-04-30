@@ -33,37 +33,25 @@ const deg2num = (lat_deg, lon_deg, zoom) => {
   return [xtile, ytile];
 }
 
-const getOBFs = (dir, files) => {
-   return files
+const findSqliteDB = (inputDir, filter) => {
+  const file = fs.readdirSync(inputDir)
+    .filter(filter)
+    .find(fileName => fileName.match(/.*\.sqlitedb$/));
+  if (file)
+    return path.join(process.cwd(), inputDir, file);
+}
+
+const listOBFs = (obfsDir, filter) => {
+   return fs.readdirSync(obfsDir)
+    .filter(filter)
     .filter(fileName => fileName.match(/.*\.obf$/))
     .map(fileName => ({
       name: fileName.replace(/\.obf$/, ''),
-      time: fs.statSync(`${dir}/${fileName}`).mtime.getTime(),
+      time: fs.statSync(`${obfsDir}/${fileName}`).mtime.getTime(),
     }))
     .sort((a, b) => b.time - a.time)
     .map(file => file.name);
 };
-
-const generateGPX = (zoom, lat, lon, xTiles, yTiles, obfs) => {
-  const tileSize = 256;
-
-  const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
-  width='${xTiles*tileSize}' height='${yTiles*tileSize}' zoom='${zoom}' mapDensity='1'
-  renderingProperties='activityMode=mtb,lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=true,groundSurveyMode=true'
-  renderingName='../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer'
->
-  <wpt lat='${lat}' lon='${lon}'>
-    <name>${zoom}</name>
-    <extensions>
-      <maps>${obfs.join(',')}</maps>
-      <zoom>${zoom}</zoom>
-    </extensions>
-  </wpt>
-</gpx>`;
-
-  console.log(`echo "${xml.replace(/\n/g, '')}" > ./dist/tmp/${zoom}.gpx`)
-}
 
 const processSnapshots = (obfsRecord, id, url) => {
   const width = 1920, height = 1080;
@@ -110,41 +98,20 @@ const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => 
   return snapshotPng;
 }
 
-const processZoom = (zoom, lat, lon, xTiles, yTiles, dirTiles, obfs) => {
+const processSqliteTiles = ({ inputDir, inputFilter, zooms, outputDir }) => {
 
-  const [ xTileCenter, yTileCenter ] = deg2num(lat, lon, zoom);
-  const xTileMin = parseInt(xTileCenter - (xTiles / 2));
-  const yTileMin = parseInt(yTileCenter - (yTiles / 2));
+  const inputFile = findSqliteDB(inputDir, inputFilter);
+  if (!inputFile)
+    throw new Error(`Sqlite DB file not found!`)
 
-  generateGPX(zoom, lat, lon, xTiles, yTiles, obfs);
-
-  console.log(`rm -rf ${dirTiles}/${zoom}/`);
-
-  for (var x=0; x<xTiles; x++) {
-    console.log(`mkdir -p ${dirTiles}/${zoom}/${xTileMin + x}`);
-  }
-
-  console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
-  -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
-  -obfFiles=./data/latest/ \
-  -gpxFile=./dist/tmp/${zoom}.gpx \
-  -output=./dist/tmp`);
-
-  console.log(`convert ./dist/tmp/${zoom}.png -transparent white ./dist/tmp/${zoom}.png`);
-
-  console.log(`convert -limit memory 2048MiB ./dist/tmp/${zoom}.png -crop 256x256 -set filename:tile "%[fx:page.x/256+${xTileMin}]/%[fx:page.y/256+${yTileMin}]" +repage "${dirTiles}/${zoom}/%[filename:tile].png"`);
-}
-
-
-const processSqlite = (file, zooms, targetDir) => {
-  const sqlite = new sqlite3.Database(file, (err) => {});
+  const sqlite = new sqlite3.Database(inputFile, (err) => {});
 
   sqlite.serialize((err) => {
     zooms.forEach(zoom => {
       sqlite.all(`SELECT * FROM tiles WHERE z = ${zoom} LIMIT -1`, (err, items) => {
         items.forEach(item => {
           const { z, x, y, image } = item;
-          const dir = `${targetDir}/${z}/${x}`;
+          const dir = `${outputDir}/${z}/${x}`;
           fs.mkdirSync(dir, { recursive: true });
           fs.writeFileSync(`${dir}/${y}.png`, image);
         })
@@ -153,40 +120,86 @@ const processSqlite = (file, zooms, targetDir) => {
   });
 }
 
+const processObfsTiles = ({ obfsDir, obfsFilter, outputDir, renderingName, renderingProperties, center, tiles, zooms }) => {
 
-const processOBFs = (dir, country, center, xTiles, yTiles, zooms) => {
-
-  const files = fs.readdirSync(dir).filter(f => f.match(country));
-
-  // compute list OBFs
-  const obfs = getOBFs(dir, files);
+  const obfsList = listOBFs(obfsDir, obfsFilter);
 
   // compute precise lat/lon
-  const [x, y] = deg2num(center[0], center[1], zooms[0]);
-  const lat = tile2lat(y, zooms[0]);
-  const lon = tile2lon(x, zooms[0]);
+  const [x, y] = deg2num(center[0], center[1], zooms[0] - 1);
+  const lat = tile2lat(y, zooms[0] - 1);
+  const lon = tile2lon(x, zooms[0] - 1);
 
   // process each zoom
   for (var i=0;i<zooms.length; i++) {
-    if (i > 0)
-      processZoom(zooms[i], lat, lon, xTiles * Math.pow(2, i), yTiles * Math.pow(2, i), `./dist/tiles`, obfs);
+
+    processTilesZoom({
+      obfsDir,
+      obfsList,
+      outputDir,
+      renderingName,
+      renderingProperties,
+      zoom: zooms[i],
+      lat,
+      lon,
+      xTiles: tiles[0] * Math.pow(2, i+1),
+      yTiles: tiles[1] * Math.pow(2, i+1),
+    });
+  }
+}
+
+const processTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDir, obfsList, renderingName, renderingProperties}) => {
+
+  const [ xTileCenter, yTileCenter ] = deg2num(lat, lon, zoom);
+  const xTileMin = Math.floor(xTileCenter - (xTiles / 2.0));
+  const yTileMin = Math.floor(yTileCenter - (yTiles / 2.0));
+
+  // console.log({xTiles, yTiles, xTileCenter, yTileCenter, xTileMin, yTileMin})
+
+  generateGPX({zoom, lat, lon, xTiles, yTiles, obfsList, renderingName, renderingProperties});
+
+  console.log(`rm -rf ${outputDir}/${zoom}/`);
+
+  for (var x=0; x<xTiles; x++) {
+    console.log(`mkdir -p ${outputDir}/${zoom}/${xTileMin + x}`);
   }
 
-  // process hilldshades if exists
-  // const hillshadeFile = files.find(filename => filename.match('Hillshade'));
-  // if (hillshadeFile)
-  //   processSqlite(path.join(dir, hillshadeFile), [ 12 ], `./dist/tiles/hillshade`);
+  console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
+  -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
+  -obfFiles=${obfsDir}/ \
+  -gpxFile=./dist/tmp/${zoom}.gpx \
+  -output=./dist/tmp`);
 
-  // // process slopes if exists
-  // const slopeFile = files.find(filename => filename.match('Slope'));
-  // if (slopeFile)
-  //   processSqlite(path.join(dir, slopeFile), [ 11 ], `./dist/tiles/slope`);
+  console.log(`convert ./dist/tmp/${zoom}.png -transparent white ./dist/tmp/${zoom}.png`);
+
+  console.log(`convert -limit memory 2048MiB ./dist/tmp/${zoom}.png -crop 256x256 -set filename:tile "%[fx:page.x/256+${xTileMin}]/%[fx:page.y/256+${yTileMin}]" +repage "${outputDir}/${zoom}/%[filename:tile].png"`);
 }
+
+const generateGPX = ({zoom, lat, lon, xTiles, yTiles, obfsList, renderingName, renderingProperties}) => {
+  const tileSize = 256;
+
+  const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
+  width='${xTiles*tileSize}' height='${yTiles*tileSize}' zoom='${zoom}' mapDensity='1'
+  renderingProperties='${renderingProperties}'
+  renderingName='${renderingName}'
+>
+  <wpt lat='${lat}' lon='${lon}'>
+    <name>${zoom}</name>
+    <extensions>
+      <maps>${obfsList.join(',')}</maps>
+      <zoom>${zoom}</zoom>
+    </extensions>
+  </wpt>
+</gpx>`;
+
+  console.log(`echo "${xml.replace(/\n/g, '')}" > ./dist/tmp/${zoom}.gpx`)
+}
+
 
 module.exports = {
   deg2num, tile2lat, tile2lon, coord4326To3857,
-  getOBFs,
   generateGPX,
-  processOBFs,
+  processObfsTiles,
+  processSqliteTiles,
   processSnapshots
 }
