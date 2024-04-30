@@ -1,15 +1,18 @@
-const { processObfsTiles, processSqliteTiles } = require('./lib');
+const { listOBFs, processObfsTiles, processSqliteTiles } = require('./lib');
 
 processObfsTiles({
   obfsDir: './data/latest',
-  obfsFilter: (f) => f.match('Thailand'),
+  obfs: listOBFs('./data/latest'),
   renderingName: '../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer',
   renderingProperties: 'lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=true,hidePeaks=true,hidePOIs=true,hideTexts=true,groundSurveyMode=true',
+  renderingBackgroundColor: '#EEEDDF',
   outputDir: './dist/tiles',
   center: [ 19.070825827131095,99.03986245393754 ],
   tiles: [ 2, 2 ],
   zooms: [ 13 ]
 });
+
+
 
 // processSqliteTiles({
 //   inputDir: './data',

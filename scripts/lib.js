@@ -42,8 +42,7 @@ const findSqliteDB = (inputDir, filter) => {
 }
 
 const listOBFs = (obfsDir, filter) => {
-   return fs.readdirSync(obfsDir)
-    .filter(filter)
+  let obfs = fs.readdirSync(obfsDir)
     .filter(fileName => fileName.match(/.*\.obf$/))
     .map(fileName => ({
       name: fileName.replace(/\.obf$/, ''),
@@ -51,49 +50,56 @@ const listOBFs = (obfsDir, filter) => {
     }))
     .sort((a, b) => b.time - a.time)
     .map(file => file.name);
+
+  if (filter) {
+    const index = obfs.findIndex(obf => obf.match(filter));
+    if (index !== -1) {
+      obfs = obfs.slice(index);
+    }
+  }
+  return obfs;
 };
 
-const processSnapshots = (obfsRecord, id, url) => {
-  const width = 1920, height = 1080;
-
-  const [zoom, lat, lon] = new URLSearchParams(new URL(url).hash).get('#map').split('/');
-
-  const snapshots = Object.entries(obfsRecord).map(([obfFolder, obfs]) => {
-    return processSnapshot(id, zoom, lat, lon, width, height, obfFolder, obfs);
+const processSnapshots = ({ obfsConfigs, id, zoom, center, width, height, renderingName, renderingProperties }) => {
+  // console.log(obfsConfigs)
+  const snapshots = obfsConfigs.map(obfsConfig => {
+    return processSnapshot({id, zoom, center, width, height, obfsConfig, renderingName, renderingProperties});
   })
-  console.log(`convert -delay 200 -loop 0 ${snapshots.join(' ')} ./dist/snapshots/snapshot-${id}-${Object.keys(obfsRecord).join('-')}.gif`);
+  const targetGif = `./dist/snapshots/snapshot-${id}-${obfsConfigs.map(c => c.name).join('_')}.gif`;
+  console.log(`convert -delay 200 -loop 0 ${snapshots.join(' ')} ${targetGif}`);
 }
 
-const processSnapshot = (id, zoom, lat, lon, width, height, obfFolder, obfs) => {
-  const snapshotName = `snapshot-${id}-${obfFolder}`;
+const processSnapshot = ({id, zoom, center, width, height, obfsConfig, renderingName, renderingProperties}) => {
+  const snapshotName = `snapshot-${id}-${obfsConfig.name}`;
   const snapshotGpx  = `./dist/tmp/${snapshotName}.gpx`;
   const snapshotPng = `./dist/tmp/${snapshotName}.png`;
+
+  const { dir, name, obfs } = obfsConfig;
 
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
   width='${width}' height='${height}' zoom='${zoom}' mapDensity='1'
-  renderingProperties='activityMode=mtb,lang=en,contourLines=11,contourWidth=thin,contourDensity=medium,region_hillshade=yes,groundSurveyMode=true'
-  renderingName='../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer'
+  renderingProperties='${renderingProperties}'
+  renderingName='${renderingName}'
 >
-  <wpt lat='${lat}' lon='${lon}'>
+  <wpt lat='${center[0]}' lon='${center[1]}'>
     <name>${snapshotName}</name>
     <extensions>
-      <maps>${obfs.join(',')}</maps>
+      <maps>${obfsConfig.obfs.join(',')}</maps>
       <zoom>${zoom}</zoom>
     </extensions>
   </wpt>
 </gpx>`;
 
-  console.log(`echo "${xml.replace(/\n/g, '')}" > ${snapshotGpx}`)
+  console.log(`echo "${xml.replace(/\n/g, '\\\n')}" > ${snapshotGpx}`)
 
   console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
   -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
-  -obfFiles=./data/${obfFolder}/ \
+  -obfFiles=${obfsConfig.dir}/ \
   -gpxFile=${snapshotGpx} \
   -output=./dist/tmp`);
 
-  const text = obfFolder === 'latest' ? new Date().getFullYear() : obfFolder;
-  console.log(`convert -pointsize 30 -fill red -draw 'text 10,40 "${text}"' ${snapshotPng} ${snapshotPng}`);
+  console.log(`convert -pointsize 30 -fill red -draw 'text 10,40 "${obfsConfig.name}"' ${snapshotPng} ${snapshotPng}`);
 
   return snapshotPng;
 }
@@ -120,9 +126,7 @@ const processSqliteTiles = ({ inputDir, inputFilter, zooms, outputDir }) => {
   });
 }
 
-const processObfsTiles = ({ obfsDir, obfsFilter, outputDir, renderingName, renderingProperties, center, tiles, zooms }) => {
-
-  const obfsList = listOBFs(obfsDir, obfsFilter);
+const processObfsTiles = ({ obfsDir, obfs, outputDir, renderingName, renderingProperties, renderingBackgroundColor, center, tiles, zooms }) => {
 
   // compute precise lat/lon
   const [x, y] = deg2num(center[0], center[1], zooms[0] - 1);
@@ -132,12 +136,13 @@ const processObfsTiles = ({ obfsDir, obfsFilter, outputDir, renderingName, rende
   // process each zoom
   for (var i=0;i<zooms.length; i++) {
 
-    processTilesZoom({
+    processObfsTilesZoom({
       obfsDir,
-      obfsList,
+      obfs,
       outputDir,
       renderingName,
       renderingProperties,
+      renderingBackgroundColor,
       zoom: zooms[i],
       lat,
       lon,
@@ -147,7 +152,7 @@ const processObfsTiles = ({ obfsDir, obfsFilter, outputDir, renderingName, rende
   }
 }
 
-const processTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDir, obfsList, renderingName, renderingProperties}) => {
+const processObfsTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDir, obfs, renderingName, renderingProperties, renderingBackgroundColor}) => {
 
   const [ xTileCenter, yTileCenter ] = deg2num(lat, lon, zoom);
   const xTileMin = Math.floor(xTileCenter - (xTiles / 2.0));
@@ -155,7 +160,7 @@ const processTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDir, o
 
   // console.log({xTiles, yTiles, xTileCenter, yTileCenter, xTileMin, yTileMin})
 
-  generateGPX({zoom, lat, lon, xTiles, yTiles, obfsList, renderingName, renderingProperties});
+  generateGPX({zoom, lat, lon, xTiles, yTiles, obfs, renderingName, renderingProperties});
 
   console.log(`rm -rf ${outputDir}/${zoom}/`);
 
@@ -169,12 +174,12 @@ const processTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDir, o
   -gpxFile=./dist/tmp/${zoom}.gpx \
   -output=./dist/tmp`);
 
-  console.log(`convert ./dist/tmp/${zoom}.png -transparent white ./dist/tmp/${zoom}.png`);
+  console.log(`convert ./dist/tmp/${zoom}.png -fuzz 3% -transparent "${renderingBackgroundColor}" ./dist/tmp/${zoom}.png`);
 
   console.log(`convert -limit memory 2048MiB ./dist/tmp/${zoom}.png -crop 256x256 -set filename:tile "%[fx:page.x/256+${xTileMin}]/%[fx:page.y/256+${yTileMin}]" +repage "${outputDir}/${zoom}/%[filename:tile].png"`);
 }
 
-const generateGPX = ({zoom, lat, lon, xTiles, yTiles, obfsList, renderingName, renderingProperties}) => {
+const generateGPX = ({zoom, lat, lon, xTiles, yTiles, obfs, renderingName, renderingProperties}) => {
   const tileSize = 256;
 
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
@@ -186,7 +191,7 @@ const generateGPX = ({zoom, lat, lon, xTiles, yTiles, obfsList, renderingName, r
   <wpt lat='${lat}' lon='${lon}'>
     <name>${zoom}</name>
     <extensions>
-      <maps>${obfsList.join(',')}</maps>
+      <maps>${obfs.join(',')}</maps>
       <zoom>${zoom}</zoom>
     </extensions>
   </wpt>
@@ -199,6 +204,7 @@ const generateGPX = ({zoom, lat, lon, xTiles, yTiles, obfsList, renderingName, r
 module.exports = {
   deg2num, tile2lat, tile2lon, coord4326To3857,
   generateGPX,
+  listOBFs,
   processObfsTiles,
   processSqliteTiles,
   processSnapshots
