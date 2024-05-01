@@ -60,16 +60,16 @@ const listOBFs = (obfsDir, filter) => {
   return obfs;
 };
 
-const processSnapshots = ({ obfsConfigs, id, zoom, center, width, height, renderingName, renderingProperties }) => {
+const processSnapshots = ({ obfsConfigs, id, zoom, center, xTiles, yTiles, renderingName, renderingProperties }) => {
   // console.log(obfsConfigs)
   const snapshots = obfsConfigs.map(obfsConfig => {
-    return processSnapshot({id, zoom, center, width, height, obfsConfig, renderingName, renderingProperties});
+    return processSnapshot({id, zoom, center, xTiles, yTiles, obfsConfig, renderingName, renderingProperties});
   })
   const targetGif = `./dist/snapshots/snapshot-${id}-${obfsConfigs.map(c => c.name).join('_')}.gif`;
   console.log(`convert -delay 200 -loop 0 ${snapshots.join(' ')} ${targetGif}`);
 }
 
-const processSnapshot = ({id, zoom, center, width, height, obfsConfig, renderingName, renderingProperties}) => {
+const processSnapshot = ({id, zoom, center, xTiles, yTiles, obfsConfig, renderingName, renderingProperties}) => {
   const snapshotName = `snapshot-${id}-${obfsConfig.name}`;
   const snapshotGpx  = `./dist/tmp/${snapshotName}.gpx`;
   const snapshotPng = `./dist/tmp/${snapshotName}.png`;
@@ -78,7 +78,7 @@ const processSnapshot = ({id, zoom, center, width, height, obfsConfig, rendering
 
   const xml = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx version='1.1' xmlns='http://www.topografix.com/GPX/1/1'
-  width='${width}' height='${height}' zoom='${zoom}' mapDensity='1'
+  width='${xTiles*256}' height='${yTiles*256}' zoom='${zoom}' mapDensity='1'
   renderingProperties='${renderingProperties}'
   renderingName='${renderingName}'
 >
