@@ -8,7 +8,7 @@ processObfsTiles({
   renderingBackgroundColor: '#EEEDDF',
   outputDir: './dist/tiles',
   center: [ 19.070825827131095,99.03986245393754 ],
-  tiles: [ 2, 2 ],
+  tiles: [ 30, 25 ],
   zooms: [ 13 ]
 });
 

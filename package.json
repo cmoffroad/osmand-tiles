@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "start": "npm run tiles",
+    "start": "npm run download && npm run tiles && npm run commit",
     "debug": "bash scripts/debug.sh",
     "commit": "bash scripts/commit.sh",
     "download": "node scripts/download.js | bash",
