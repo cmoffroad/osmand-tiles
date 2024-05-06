@@ -37,11 +37,11 @@ function downloadFile(region, year, month, day) {
   const filename = `${region}_${year}_${month}_${day}.obf`;
   const source = `https://download.osmand.net/download?aosmc=true&self=true&file=${filename}.gz`
   const target = `./data/latest/${filename}`;
-  console.log(`curl -k -o - "${source}" | gunzip > "${target}"`);  
+  console.log(`curl -k -o - "${source}" | gunzip > "${target}"`);
 }
 
 function removeFiles(region, year, month) {
-  const files = fs.readdirSync('./data/latest/').filter(f => f.match(`${region}_${year}_${month}`)); 
+  const files = fs.readdirSync('./data/latest/').filter(f => f.match(`${region}_${year}_${month}`));
   files.forEach(file => {
     console.log(`rm ./data/latest/${file}`)
   });

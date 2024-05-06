@@ -1,1 +1,1 @@
-sh ../OsmAndMapCreator-main/OsmAndMapCreator.sh
+sh ../../OsmAnd/OsmAndMapCreator-main/OsmAndMapCreator.sh
