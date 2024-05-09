@@ -58,13 +58,13 @@ Based on official [documentation](https://docs.osmand.net/en/main@latest/develop
 ### OsmAnd-resources
       
       ### download
-      cd ~/Documents/WORKSPACE/OSM
+      cd ~/WORKSPACES/OSM
       git clone https://github.com/osmandapp/OsmAnd-resources.git
 
 ### OsmAndMapCreator
     
       ### download and unzip
-      cd ~/Documents/WORKSPACE/OsmAnd
+      cd ~/WORKSPACES/OsmAnd
       curl -o OsmAndMapCreator-main.zip http://download.osmand.net/latest-night-build/OsmAndMapCreator-main.zip
       unzip OsmAndMapCreator-main.zip -d OsmAndMapCreator-main
       rm -f OsmAndMapCreator-main.zip
@@ -74,8 +74,8 @@ Based on official [documentation](https://docs.osmand.net/en/main@latest/develop
       sh OsmAndMapCreator.sh
 
 - Select in menu Window > Preferences
-  - For `Directory with binary files`, set `/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release/`
-  - For `Rendering style file`, set the rendering file of your choice e.g. `~/Documents/WORKSPACE/OsmAnd/OsmAnd-resources/rendering_styles/topo.render.xml`
+  - For `Directory with binary files`, set `/WORKSPACES/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release/`
+  - For `Rendering style file`, set the rendering file of your choice e.g. `~/WORKSPACES/OsmAnd/OsmAnd-resources/rendering_styles/topo.render.xml`
   - Close Preferences window 
 - Top right corner of click on `Online Rendering` button
   - Confirm details and click `OK`

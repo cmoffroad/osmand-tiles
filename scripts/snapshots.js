@@ -44,8 +44,8 @@ processSnapshots({
   xTiles: 18,
   yTiles: 12,
   // renderingName: '../OsmAnd-resources/rendering_styles/desert',
-  // renderingName: '/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-resources/rendering_styles/enduro',
-  renderingName: '/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-resources/rendering_styles/outdoor',
+  // renderingName: '/Users/julien/WORKSPACES/OsmAnd/OsmAnd-resources/rendering_styles/enduro',
+  renderingName: '/Users/julien/WORKSPACES/OsmAnd/OsmAnd-resources/rendering_styles/outdoor',
   // renderingProperties: 'lang=en,contourLines=11,contourWidth=thin,contourDensity=medium,region_hillshade=yes,groundSurveyMode=false',
   id: 'doi-soi-malai',
   center: [17.1483518,98.8288542]

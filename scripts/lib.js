@@ -94,7 +94,7 @@ const processSnapshot = ({id, zoom, center, xTiles, yTiles, obfsConfig, renderin
   console.log(`echo "${xml.replace(/\n/g, '\\\n')}" > ${snapshotGpx}`)
 
   console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
-  -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
+  -native=/Users/julien/WORKSPACES/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
   -obfFiles=${obfsConfig.dir}/ \
   -gpxFile=${snapshotGpx} \
   -output=./dist/tmp`);
@@ -169,7 +169,7 @@ const processObfsTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDi
   }
 
   console.log(`java -Xms512M -Xmx3072M -cp ../../OsmAnd/OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
-  -native=/Users/julien/Documents/WORKSPACE/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
+  -native=/Users/julien/WORKSPACES/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
   -obfFiles=${obfsDir}/ \
   -gpxFile=./dist/tmp/${zoom}.gpx \
   -output=./dist/tmp`);
