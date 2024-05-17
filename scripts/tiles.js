@@ -4,7 +4,7 @@ processObfsTiles({
   obfsDir: './data/latest',
   obfs: listOBFs('./data/latest'),
   renderingName: '../osmand-outdoor-explorer-plugin/src/rendering/outdoor-explorer',
-  renderingProperties: 'lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=true,hidePeaks=true,hidePOIs=true,hideTexts=true,groundSurveyMode=true',
+  renderingProperties: 'lang=en,hideContour=true,hideBuildings=true,hideBoundaries=true,hideLanduse=true,hideWater=true,hidePeaks=true,hidePOIs=true,hideTexts=true,groundSurveyMode=true,detailedColors=true',
   renderingBackgroundColor: '#EEEDDF',
   outputDir: './dist/tiles',
   center: [ 19.070825827131095,99.03986245393754 ],
