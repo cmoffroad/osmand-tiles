@@ -174,7 +174,8 @@ const processObfsTilesZoom = ({zoom, lat, lon, xTiles, yTiles, outputDir, obfsDi
   -gpxFile=./dist/tmp/${zoom}.gpx \
   -output=./dist/tmp`);
 
-  console.log(`convert ./dist/tmp/${zoom}.png -fuzz 3% -transparent "${renderingBackgroundColor}" ./dist/tmp/${zoom}.png`);
+  if (renderingBackgroundColor !== undefined)
+    console.log(`convert ./dist/tmp/${zoom}.png -fuzz 3% -transparent "${renderingBackgroundColor}" ./dist/tmp/${zoom}.png`);
 
   console.log(`convert -limit memory 2048MiB ./dist/tmp/${zoom}.png -crop 256x256 -set filename:tile "%[fx:page.x/256+${xTileMin}]/%[fx:page.y/256+${yTileMin}]" +repage "${outputDir}/${zoom}/%[filename:tile].png"`);
 }
