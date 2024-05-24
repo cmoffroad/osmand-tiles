@@ -1,5 +1,5 @@
 {
-  "name": "osm-tiles",
+  "name": "osmand-tiles",
   "version": "0.1.0",
   "description": "",
   "scripts": {
@@ -8,8 +8,7 @@
     "commit": "bash scripts/commit.sh",
     "download": "node scripts/download.js | bash",
     "snapshots": "node scripts/snapshots.js | bash",
-    "tiles": "node scripts/tiles.js | bash",
-    "50k": "bash scripts/50k.sh"
+    "tiles": "node scripts/tiles.js | bash"
   },
   "author": "cmoffroad",
   "license": "MIT",
