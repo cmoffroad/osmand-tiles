@@ -69,7 +69,7 @@ const processSnapshots = ({ obfsConfigs, id, zoom, center, xTiles, yTiles, rende
   console.log(`convert -delay 200 -loop 0 ${snapshots.join(' ')} ${targetGif}`);
 }
 
-const processSnapshot = ({id, zoom, center, xTiles, yTiles, obfsConfig, renderingName, renderingProperties}) => {
+const processSnapshot = ({id, zoom, center, xTiles, yTiles, obfsConfig, renderingName, renderingProperties, text}) => {
   const snapshotName = `snapshot-${id}-${obfsConfig.name}`;
   const snapshotGpx  = `./dist/tmp/${snapshotName}.gpx`;
   const snapshotPng = `./dist/tmp/${snapshotName}.png`;
@@ -93,13 +93,14 @@ const processSnapshot = ({id, zoom, center, xTiles, yTiles, obfsConfig, renderin
 
   console.log(`echo "${xml.replace(/\n/g, '\\\n')}" > ${snapshotGpx}`)
 
-  console.log(`java -Xms512M -Xmx3072M -cp ../OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
+  console.log(`java -Xms512M -Xmx3072M -cp ../../OsmAnd/OsmAndMapCreator-main/OsmAndMapCreator.jar net.osmand.swing.OsmAndImageRendering \
   -native=/Users/julien/WORKSPACES/OsmAnd/OsmAnd-core-legacy/binaries/darwin/intel/Release \
   -obfFiles=${obfsConfig.dir}/ \
   -gpxFile=${snapshotGpx} \
   -output=./dist/tmp`);
 
-  console.log(`convert -pointsize 30 -fill red -draw 'text 10,40 "${obfsConfig.name}"' ${snapshotPng} ${snapshotPng}`);
+  if (text)
+    console.log(`convert -pointsize 30 -fill red -draw 'text 10,40 "${obfsConfig.name}"' ${snapshotPng} ${snapshotPng}`);
 
   return snapshotPng;
 }
