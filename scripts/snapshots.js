@@ -40,4 +40,3 @@ processSnapshots({ ...defaults, id: 'pa-sak-ngam', center: [19.05479499819361, 9
 processSnapshots({ ...defaults, id: 'mae-jo', center: [18.96125944098272,99.05029959976676 ] });
 processSnapshots({ ...defaults, id: 'pa-khao-lam', center: [19.284842310388864,98.70770573616029 ] });
 processSnapshots({ ...defaults, id: 'huay-khup-kap', center: [19.253543639179295,98.86196292936803 ] });
-processSnapshots({ ...defaults, id: 'doi-soi-ma-lat', center: [ 17.20811674649494, 98.82002835107154 ] });
