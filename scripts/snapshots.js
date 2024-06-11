@@ -10,14 +10,14 @@ const defaults = {
     {
       dir: './data/latest',
       name: new Date().getFullYear(),
-      obfs: ['Thailand_asia.srtm', 'Thailand_asia']
+      obfs: listOBFs('./data/latest')
     }
   ],
   zoom: 13,
   xTiles: 4,
   yTiles: 4,
   renderingName: '../osmand-dirtbike-plugin/src/rendering/dirtbike',
-  renderingProperties: 'lang=en,contourLines=11,contourWidth=thin,contourDensity=medium,contourColorScheme=brown,region_hillshade=yes,hideContour=true,groundSurveyMode=false'
+  renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=false,detailedColors=true,hideContourLabels=true,hideContourLabels=true,hideBoundaries=true'
 }
 
 processSnapshots({ ...defaults, id: 'doi-mon-ngo', center: [ 19.141279945598498, 98.78310464322567 ] });
