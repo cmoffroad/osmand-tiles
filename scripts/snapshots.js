@@ -17,7 +17,7 @@ const defaults = {
   xTiles: 4,
   yTiles: 4,
   renderingName: '../osmand-dirtbike-plugin/src/rendering/dirtbike',
-  renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=false,detailedColors=true,hideContour=true,hideContourLabels=true,hideBoundaries=true'
+  renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=true,detailedColors=true,hideContour=true,hideContourLabels=true,hideBoundaries=true'
 }
 
 processSnapshots({ ...defaults, id: 'doi-mon-ngo', center: [ 19.141279945598498, 98.78310464322567 ] });
