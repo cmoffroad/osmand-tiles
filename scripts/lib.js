@@ -66,7 +66,7 @@ const processSnapshots = ({ obfsConfigs, id, zoom, center, xTiles, yTiles, rende
     return processSnapshot({id, zoom, center, xTiles, yTiles, obfsConfig, renderingName, renderingProperties});
   })
   const targetGif = `./dist/snapshots/snapshot-${id}-${obfsConfigs.map(c => c.name).join('_')}.gif`;
-  console.log(`convert -delay 200 -loop 0 ${snapshots.join(' ')} ${targetGif}`);
+  console.log(`convert -delay 100 -loop 0 ${snapshots.join(' ')} ${targetGif}`);
 }
 
 const processSnapshot = ({id, zoom, center, xTiles, yTiles, obfsConfig, renderingName, renderingProperties, text}) => {
