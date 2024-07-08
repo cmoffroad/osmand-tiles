@@ -18,7 +18,7 @@ processObfsTiles({
   obfs: listOBFs('./data/latest'),
   renderingName: '../osmand-dirtbike-plugin/src/rendering/dirtbike',
   renderingProperties: 'lang=en,hideContour=true,hideWater=true,hideBoundaries=true,hideRailway=true,hidePeaks=true,hidePOIs=true,hideTexts=true,hideLanduse=true,groundSurveyMode=true,detailedColors=true',
-  renderingBackgroundColor: '#FFFFFF',
+  renderingBackgroundColor: '#efebe9',
   outputDir: './dist/tiles/locator',
   center: [ 19.070825827131095,99.03986245393754 ],
   tiles: [ 30, 25 ],
