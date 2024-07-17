@@ -16,8 +16,10 @@ const defaults = {
   zoom: 13,
   xTiles: 8,
   yTiles: 6,
-  renderingName: '../osmand-dirtbike-plugin/src/rendering/dirtbike',
-  renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=false,detailedColors=true,hideContour=false,hideContourLabels=true,hideBoundaries=true'
+  renderingName: '../OsmAnd-resources/rendering_styles/offroad',
+  renderingProperties: 'lang=en,surfaceIntegrity=true,contourColorScheme=light_brown,contourDensity=high,contourLines=11,contourWidth=thin'
+  // renderingName: '../osmand-dirtbike-plugin/src/rendering/dirtbike',
+  // renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=false,detailedColors=true,hideContour=false,hideContourLabels=true,hideBoundaries=true'
 }
 
 processSnapshots({ ...defaults, id: 'doi-mon-ngo', center: [ 19.141279945598498, 98.78310464322567 ] });
