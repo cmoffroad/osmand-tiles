@@ -23,7 +23,7 @@ if (arg && arg.length === 6) {
     day = `0${day}`;
 }
 
-const regions = [ 'Thailand_asia', 'Vietnam_asia' ];
+const regions = [ 'Thailand_asia' ];
 
 regions.forEach(region => {
   removeFiles(region, year, month);
