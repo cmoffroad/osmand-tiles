@@ -35,7 +35,8 @@ regions.forEach(region => {
 
 function downloadFile(region, year, month, day) {
   const filename = `${region}_${year}_${month}_${day}.obf`;
-  const source = `https://download.osmand.net/download?aosmc=true&self=true&file=${filename}.gz`
+  // const source = `https://osmand.net/download?standard=yes&file=${filename}.gz`;
+  const source = `https://osmand.net/download?aosmc=true&file=${filename}.gz`
   const target = `./data/latest/${filename}`;
   console.log(`echo "-- downloading ${filename}"`);
   console.log(`curl -k -o - "${source}" | gunzip > "${target}"`);
