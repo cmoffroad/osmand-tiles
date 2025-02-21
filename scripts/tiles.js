@@ -4,7 +4,7 @@ processObfsTiles({
   obfsDir: './data/latest',
   obfs: listOBFs('./data/latest'),
   renderingName: '../osmand-dirtbike-plugin/src/rendering/dirtbike',
-  renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=false,showUnknown=false,hideContour=false,hideContourLabels=true,hideBoundaries=true,showFixme=false,hideDetailedColors=false,hideMajorRoads=false,hideMinorRoads=false,hidePaths=false',
+  renderingProperties: 'lang=en,contourColorScheme=brown,contourDensity=high,contourLines=11,contourWidth=thin,groundSurveyMode=false,showUnknown=false,hideContour=false,hideContourLabels=true,hideBoundaries=true,hideBuildings=false,showFixme=true,showNotes=true,hideDetailedColors=false,hideMajorRoads=false,hideMinorRoads=false,hidePaths=false',
   // renderingBackgroundColor: '#EEEDDF',
   outputDir: './dist/tiles',
   center: [ 19.070825827131095,99.03986245393754 ],
